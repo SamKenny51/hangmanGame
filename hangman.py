@@ -44,6 +44,7 @@ def blurDefinition(word, definition):
     return new_def
 
 def createHiddenString(word, char_set):
+    """ create string that is germane to the specified character set so that the users don't get confused """
     new_string = ''
     for c in word:
         if c in char_set:
@@ -89,7 +90,7 @@ class Picture(object):
     def addText(self, text, xPos, yPos, justify="Left", wrap=False):
         '''
         Add text to picture at (xPos, yPos)
-        TODO: include right and center justify options and wordwrap functionality
+        TODO: include right and center justify options
         '''
         words = text.split(' ')
         xPos_0 = xPos
@@ -105,7 +106,7 @@ class Picture(object):
         
     def addLine(self, from_xPos, from_yPos, to_xPos, to_yPos, style):
         '''
-        Add a line to picture starting at from 
+        Add a line to picture starting at (from_xPos, from_yPos) to (to_xPos,to_yPos) with the style character 
         '''            
         if from_xPos == to_xPos:
             for yPos in range(from_yPos,to_yPos+1):
@@ -124,6 +125,9 @@ class Picture(object):
             self.addDot(round(xPos), round(yPos), '#')
 
     def addDot(self, xPos, yPos, style='#'):
+        '''
+        Add a dot at (xPos, yPos) with the style character
+        '''
         self.picture[yPos] = self.picture[yPos][:xPos] + style + self.picture[yPos][xPos+1:]
 
 if __name__ == '__main__':
