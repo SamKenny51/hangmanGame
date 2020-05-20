@@ -36,7 +36,21 @@ def fetchWord(word_length):
 
 def blurDefinition(word, definition):
     """ regular expression to censor spoiler words """
-    return re.sub(word,len(word)*"*", definition)
+    new_def = re.sub(word,len(word)*"*", definition)
+    if word[-1] == 'd': new_def = re.sub(word[:-1],(len(word)-1)*"*", new_def)
+    if word[-1] == 'y': new_def = re.sub(word[:-1],(len(word)-1)*"*", new_def)
+    if word[-2:] == 'ly': new_def = re.sub(word[:-2],(len(word)-2)*"*", new_def)
+    if word[-2:] == 'er': new_def = re.sub(word[:-1],(len(word)-2)*"*", new_def)
+    return new_def
+
+def createHiddenString(word, char_set):
+    new_string = ''
+    for c in word:
+        if c in char_set:
+            new_string += '_ '
+        else:
+            new_string += c + ' '
+    return new_string[:-1]
 
 class Picture(object):
 
@@ -113,6 +127,8 @@ class Picture(object):
         self.picture[yPos] = self.picture[yPos][:xPos] + style + self.picture[yPos][xPos+1:]
 
 if __name__ == '__main__':
+    char_set = [chr(i+97) for i in range(26)]
+    
     pict = Picture(50,25)
     pict.addText("H A N G M A N", 3, 2)
     pict.addLine(0,16,49,16,'#')
@@ -122,8 +138,14 @@ if __name__ == '__main__':
     while True:
         
         word, word_counter, definition = fetchWord(4)
-        blurred_def = blurDefinition(word, definition)
-        hidden_word = "_ "*(len(word)-1) + "_"
+        blurred_def = blurDefinition(word, definition.lower())
+        if word[-1] == 'd':
+            blurred_def = blurDefinition(word, blurred_def)
+        if word[-1] == 'y':
+            blurred_def = blurDefinition(word, blurred_def)
+        if word[-2:] == 'ly':
+            blurred_def = blurDefinition(word, blurred_def)
+        hidden_word = createHiddenString(word, char_set)
         pict.addText(hidden_word, 3, 4)
         pict.addText("Hint: "+blurred_def,3,18)
         print(pict)
@@ -132,7 +154,7 @@ if __name__ == '__main__':
         incorrect = ''
         while nGuesses >= 1:
             player_letter = input("Pick a letter (a-z)! ")
-            if len(player_letter) == 0:
+            if len(player_letter) == 0 or player_letter not in char_set:
                 continue
             elif word_counter[player_letter[0].lower()] > 0:
                 word_counter[player_letter] = 0
