@@ -11,3 +11,4 @@ Features
 Ideas for improvement
 * Draw hangman as incorrect guesses are made
 * Allow users to adjust the length of the words
+* Expand the use of RegEx to detect spoiler words and censor them appropriately
