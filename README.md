@@ -10,3 +10,4 @@ Features
 
 Ideas for improvement
 * Draw hangman as incorrect guesses are made
+* Allow users to adjust the length of the words
