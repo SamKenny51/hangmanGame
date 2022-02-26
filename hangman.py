@@ -137,6 +137,7 @@ class Picture:
 
 if __name__ == '__main__':
     char_set = [chr(i+97) for i in range(26)]
+    # Set up the UI for playing
     pict = Picture(50, 25)
     pict.add_text("H A N G M A N", 3, 2)
     pict.add_line(0, 16, 49, 16, '#')
@@ -144,6 +145,7 @@ if __name__ == '__main__':
     pict.add_text("Incorrect Guesses", 28, 2)
 
     while True:
+        # Pick word out of dictionary and associated data
         word, word_counter, definition = fetch_word(4)
         blurred_def = blur_definition(word, definition.lower())
         hidden_word = create_hidden_string(word, char_set)
@@ -151,14 +153,16 @@ if __name__ == '__main__':
         pict.add_text("Hint: "+blurred_def, 3, 18)
         print(pict)
 
-        NGUESSES = 10
-        INCORRECT = ''
+        NGUESSES = 10  # Number of guesses allowed to player at the start of the game
+        INCORRECT = '' # String to collect incorrect guesses
         while NGUESSES >= 1:
             player_letter = input("Pick a letter (a-z)! ")
+            # Catch invalid characters and return to above prompt
             if len(player_letter) == 0 or player_letter not in char_set:
                 continue
-
+            
             if word_counter[player_letter[0].lower()] > 0:
+                # The player made a correct guess, record the guess and update the UI accordingly
                 word_counter[player_letter] = 0
                 i = 0
                 for c in word:
@@ -167,20 +171,26 @@ if __name__ == '__main__':
                     i += 2
                 pict.add_text(hidden_word, 3, 4)
             else:
+                # The player made an incorrect guess, update the UI to display the incorrect guess and decrement the number of guesses
                 print("Wrong!")
                 INCORRECT += player_letter + " "
                 pict.add_text(INCORRECT, 28, 4)
                 NGUESSES -= 1
-
+                
+            # Output the UI to the screen
             print(pict)
+            
+            # When no more guesses are left, display the game over message with the word
             if NGUESSES == 0:
                 print(f"Game Over! The word was {word}!")
                 break
-
+                
+            # Success! The player has determined the hidden word
             if ''.join(hidden_word.split(" ")) == word:
                 print("Well done! You win!")
                 break
-
+        
+        # Prompt user to play again or quit
         playAgain = input("Would you like to play again? (y/n) ")
         if playAgain != 'y':
             break
